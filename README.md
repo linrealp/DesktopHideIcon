@@ -4,14 +4,38 @@
 
 一个 Windows 轻量托盘小工具：双击桌面空白处隐藏桌面图标，再次双击恢复；可设置是否同时隐藏任务栏，也可设置开机启动。
 
-## 快速使用
+[![Latest Release](https://img.shields.io/github/v/release/linrealp/DesktopHideIcon?label=release&sort=semver)](https://github.com/linrealp/DesktopHideIcon/releases/latest)
+[![Windows 10/11](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?logo=windows&logoColor=white)](https://github.com/linrealp/DesktopHideIcon)
+[![AI Generated](https://img.shields.io/badge/AI-100%25%20generated-8A2BE2)](https://github.com/linrealp/DesktopHideIcon)
 
-1. 双击运行 `dist\桌面工具.exe`。
+## 下载
+
+推荐直接使用最新发布版，无需安装或编译：
+
+**[前往 GitHub Releases 下载 →](https://github.com/linrealp/DesktopHideIcon/releases/latest)**
+
+当前版本为 **v1.0.0**，发布页提供：
+
+| 发布文件 | 说明 |
+| --- | --- |
+| `DesktopHideIcon-v1.0.0.exe` | 免安装单文件版，下载后直接双击运行 |
+| `DesktopHideIcon-v1.0.0-windows.zip` | 压缩包，内含 `桌面工具.exe` 和 `README.md` |
+| `SHA256SUMS.txt` | 发布文件的 SHA-256 校验值 |
+
+也可以使用 Git 获取完整源码：
+
+```powershell
+git clone https://github.com/linrealp/DesktopHideIcon.git
+```
+
+## 快速开始
+
+1. 从 Releases 下载并运行 EXE；如果下载的是 ZIP，先解压再运行。
 2. 程序只驻留在任务栏通知区域，不显示主窗口。
 3. 双击桌面空白处，隐藏桌面图标；再双击一次恢复。
 4. 右键通知区域图标，可修改设置或退出。
 
-如果通知区域图标被收进了“隐藏的图标”里，点击任务栏右侧的 `^` 展开即可找到。
+如果通知区域没有直接显示程序图标，点击任务栏右侧的 `^`，在“隐藏的图标”中即可找到。
 
 ## 功能
 
@@ -20,9 +44,9 @@
 - **可选隐藏任务栏**：托盘菜单勾选“隐藏图标时同时隐藏任务栏”，默认关闭。开启后会同时隐藏所有显示器上的任务栏。
 - **开机启动**：托盘菜单勾选“开机启动”，默认关闭。使用当前用户注册表启动项，不需要管理员权限。
 - **自动恢复**：正常退出程序时，会自动恢复图标和任务栏。
-- **异常恢复**：若程序被强制结束，重新运行一次 `桌面工具.exe`，或执行 `桌面工具.exe --restore`，即可恢复。
+- **异常恢复**：若程序被强制结束，重新运行一次 EXE，或执行 EXE `--restore`，即可恢复。
 - **单实例**：重复运行不会产生多个后台进程。
-- **轻量**：单个 EXE，无需安装额外运行库，不联网，不常驻轮询。
+- **轻量**：单个 42.5 KB 的 EXE，无需安装额外运行库，不联网，不常驻轮询。
 
 ## 托盘菜单
 
@@ -32,7 +56,37 @@
 - `使用说明`：显示操作提示和恢复方法。
 - `退出`：恢复图标/任务栏后退出。
 
+菜单左侧带有勾选栏，蓝色对勾表示该选项已经开启。
+
 双击托盘图标也可以手动切换隐藏状态，作为备用入口。
+
+## 常见问题
+
+**双击桌面空白处没有反应？**
+
+确认程序仍在通知区域运行；桌面图标区域被其他窗口覆盖时，先按 `Win + D` 显示桌面。若任务栏正被隐藏，直接再次双击桌面空白处即可恢复。
+
+**隐藏任务栏后找不到托盘图标？**
+
+这是预期现象：任务栏和托盘一起隐藏了。直接双击桌面空白处恢复图标和任务栏。
+
+**托盘菜单里怎么判断选项是否开启？**
+
+菜单左侧会显示勾选框，有蓝色对勾表示已开启。例如“开机启动”打勾即表示已写入开机启动项。
+
+**双击桌面图标会误触发吗？**
+
+不会。双击“回收站”等桌面图标只会执行图标本身的动作，不会隐藏桌面。
+
+**程序异常结束后桌面还是隐藏状态？**
+
+重新运行 EXE，或执行：
+
+```powershell
+.\桌面工具.exe --restore
+```
+
+`--restore` 会直接恢复桌面图标和所有任务栏，然后退出，不会驻留后台。程序正常启动时也会检查 `%APPDATA%\DeskToggle\hidden.state`，发现上次异常状态会先尝试恢复。
 
 ## 开机启动说明
 
@@ -41,23 +95,6 @@
 - 值内容：带引号的当前 EXE 完整路径
 - 这是“用户登录后启动”，不是 Windows 服务。
 - 如果把 EXE 移动到其他目录，先运行一次新位置的 EXE，启动项路径会自动更新。
-
-## 恢复桌面
-
-任务栏被隐藏时，托盘图标也会一起消失。这是预期现象，直接双击桌面空白处即可恢复。
-
-如果桌面被其他窗口覆盖，先按 `Win + D` 显示桌面，再双击空白处。
-
-程序异常结束的恢复方式：
-
-```powershell
-.\桌面工具.exe --restore
-```
-
-`--restore` 会直接恢复桌面图标和所有任务栏，然后退出，不会驻留后台。
-
-程序启动时也会检查 `%APPDATA%\DeskToggle\hidden.state`：
-如果发现上次异常退出时留下了隐藏状态，会先尝试恢复桌面。
 
 ## 系统要求
 
@@ -89,7 +126,7 @@ FirstRun=0
 
 1. 右键托盘图标，取消勾选“开机启动”。
 2. 点击“退出”。
-3. 删除 `桌面工具.exe`。
+3. 删除 `桌面工具.exe` 或解压目录。
 4. 可选：删除 `%APPDATA%\DeskToggle`。
 
 程序不会写系统目录，不会安装服务，也不会修改自动隐藏任务栏等 Windows 设置。
@@ -114,7 +151,13 @@ dist\桌面工具.exe
 python tools\make_icon.py
 ```
 
-目录结构：
+运行冒烟测试：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\smoke-test.ps1
+```
+
+项目结构：
 
 ```text
 src/        C# 源码
@@ -123,6 +166,7 @@ tools/      图标生成脚本
 tests/      冒烟测试脚本
 build.ps1   构建脚本
 dist/       最终 EXE
+README.md   项目说明
 ```
 
 ## 实现说明与限制
